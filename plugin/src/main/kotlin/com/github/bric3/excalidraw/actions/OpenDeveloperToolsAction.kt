@@ -12,7 +12,8 @@ import com.intellij.openapi.util.Key
 class OpenDeveloperToolsAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = debugMode
+        // e.presentation.isEnabledAndVisible = debugMode
+        e.presentation.isEnabledAndVisible = true
     }
 
     override fun actionPerformed(e: AnActionEvent) {

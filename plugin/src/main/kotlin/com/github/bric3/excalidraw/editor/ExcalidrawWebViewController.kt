@@ -110,6 +110,8 @@ class ExcalidrawWebViewController(
 
                 when (message["type"]) {
                     "ready" -> { /* no-op: reason using Excalidraw callback/readiness seems less reliable than onLoadEnd */
+                        logger.debug("controller => cef")
+                        whenReady.tryEmit(Unit)
                     }
 
                     "continuous-update" -> payload.value = message["content"]!!
@@ -163,7 +165,7 @@ class ExcalidrawWebViewController(
                     """
                     window.EXCALIDRAW_ASSET_PATH = "/"; // loads excalidraw assets from plugin (instead of CDN)
                     
-                    window.initialData = {
+                    window.initialProps = {
                         "theme": "$uiTheme",
                         "readOnly": false,
                         "gridMode": false,
@@ -178,7 +180,7 @@ class ExcalidrawWebViewController(
 
             override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
                 if (frame?.url == pluginUrl) {
-                    whenReady.tryEmit(Unit)
+                    // whenReady.tryEmit(Unit)
                 }
             }
         }.also { loadHandler ->
@@ -241,7 +243,7 @@ class ExcalidrawWebViewController(
             
             window.postMessage({
                 type: "update",
-                elements: json.elements
+                elements: json.elements,
                 files: json.files
             }, 'https://$pluginDomain')
             """

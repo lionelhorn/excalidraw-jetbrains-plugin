@@ -1,12 +1,21 @@
 import React from "react";
-import { createRoot } from "react-dom/client"; // From React 18
+import {createRoot} from "react-dom/client";
 
-// import "./styles.scss";
-import "./styles.css";
-
-import {App} from "./App";
-
-// https://reactjs.org/blog/2022/03/08/react-18-upgrade-guide.html#updates-to-client-rendering-apis
 const rootContainer = document.getElementById("root");
 const root = createRoot(rootContainer!)
-root.render(React.createElement(App));
+
+const IframeDev = () => {
+    const iframeRef = (iframe: any) => {
+
+        // Proxy message to frame loaded by cef to iframe
+        window.addEventListener("message", (e) => {
+            console.log("win=>frame", e);
+            const {type, data} = e
+            iframe.contentWindow?.postMessage(data, "*");
+        })
+    };
+
+    return <iframe ref={iframeRef} id="dev" src={"http://localhost:5173"} width="100%" height="100%"/>;
+}
+
+root.render(<IframeDev/>);
